@@ -38,7 +38,7 @@ scene.add(ambientLight);
 
 
 var floorGeometry = new THREE.BoxGeometry(10,1,10);
-var floorMaterial = new THREE.MeshLambertMaterial({map: textureLoader.load('img/b.jpg'), side: THREE.DoubleSide});
+var floorMaterial = new THREE.MeshBasicMaterial({color: 0xEEEEEE});
 var floorCube = new THREE.Mesh(floorGeometry,floorMaterial);
 floorCube.position.y = -5;
 scene.add(floorCube);
