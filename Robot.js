@@ -1,17 +1,38 @@
 
 
+class Robot{
 
-function createRobot(x,y,z,proportion = 1){
-  let group = new THREE.Group();
-  group.add(generateAxis(x,y,z,proportion));
-  group.add(generateBody(x,y,z,proportion));
-  group.add(generateRightWheels(x,y,z,proportion));
-  group.add(generateLeftWheels(x,y,z,proportion));
-  group.add(generateHead(x,y,z,proportion));
+  constructor(x,y,z,proportion = 1){
+    
+    this.group = new THREE.Group();
+    this.axis = generateAxis(x,y,z,proportion);
+    this.body = generateBody(x,y,z,proportion);
+    this.rightWheels = generateRightWheels(x,y,z,proportion);
+    this.leftWheels = generateLeftWheels(x,y,z,proportion);
+    this.head = generateHead(x,y,z,proportion);
 
-  return group;
-  //scene.add(group);
+    this.group.add(this.axis);
+    this.group.add(this.body);
+    this.group.add(this.rightWheels);
+    this.group.add(this.leftWheels);
+    this.group.add(this.head);  
+  
+  }
+  
+  setVelocityWheels(vx,vy,vz){
+    this.group.position.add(
+      new THREE.Vector3(vx,vy,vz)
+    );
+  }
+
+  setRotationRightWheels(wx,wy,wz){
+    this.rightWheels.rotation.set(wx,wy,wz);
+    
+  }
+
+
 }
+
 
 function generateRightWheels(x,y,z, proportion = 1){
   let geometry = new THREE.TorusGeometry(proportion*0.2,proportion*0.08,20,60);
@@ -81,7 +102,7 @@ function generateAxis(x,y,z,proportion=1){
 
 function generateHead(x,y,z,proportion = 1){
   
-  let geometry = new THREE.TorusGeometry(0.05*proportion,0.3*proportion,14,21,4);
+  let geometry = new THREE.TorusGeometry(0.05*1.25*proportion,1.25*0.3*proportion,14,21,4);
   
   let material = new THREE.MeshPhysicalMaterial( { 
       color: 0xc40707,

@@ -11,6 +11,8 @@ var renderer = new THREE.WebGLRenderer({
 document.body.appendChild(renderer.domElement);
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
+var robot;
+
 init();
 
 window.addEventListener("resize", () => {
@@ -66,13 +68,13 @@ function init(){
   let cameraPositionZ = 8*proportion;
 
   
-  let robot = createRobot(x,y,z,proportion);
-  scene.add(robot);
+  robot = new Robot(x,y,z,proportion);
+  scene.add(robot.group);
   setFloor(x,y-0.75*proportion,z,proportion);
   setLight(x,y,z,500);
 
   camera.position.set(cameraPositionX,cameraPositionY,cameraPositionZ);
-  camera.lookAt(robot.getWorldPosition());
+  camera.lookAt(robot.group.getWorldPosition());
   
   renderer.setClearColor(0xEEEEEE,1);
   renderer.setSize( window.innerWidth, window.innerHeight );
