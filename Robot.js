@@ -16,20 +16,39 @@ class Robot{
     this.group.add(this.rightWheels);
     this.group.add(this.leftWheels);
     this.group.add(this.head);  
-  
+    
+    this.linearSpeed = new THREE.Vector3(0,0,0);
+    this.angularSpeed = new THREE.Vector3(0,0,0);
+    this.angle = 0;
+    
+    this.maxLinearSpeed = 6;
+    this.maxAngularSpeed = 2;
+    
   }
   
   setVelocityWheels(vx,vy,vz){
-    this.group.position.add(
-      new THREE.Vector3(vx,vy,vz)
-    );
+    this.linearSpeed.add(new THREE.Vector3(vx,vy,vz));
+    //this.group.position.add(this.linearSpeed);
+    this.linearSpeed.clampLength(-this.maxLinearSpeed,this.maxLinearSpeed);
   }
 
-  setRotationRightWheels(wx,wy,wz){
-    this.rightWheels.rotation.set(wx,wy,wz);
+  setRotation(wx,wy,wz){
+    this.angularSpeed.add(new THREE.Vector3(wx,wy,wz));
+    this.angularSpeed.clampLength(-this.maxAngularSpeed,this.maxAngularSpeed);
+  }
+
+  move(){
+
+    let dt = 1/60;
+    let v = this.linearSpeed.length()*Math.sign(this.linearSpeed.dot(new THREE.Vector3(1,1,1)));
+    let w = this.angularSpeed.length()*Math.sign(this.angularSpeed.dot(new THREE.Vector3(1,1,1)));
     
-  }
+    this.group.position.x += v*dt*Math.sin(this.angle + w*dt/2);
+    this.group.position.z += v*dt*Math.cos(this.angle + w*dt/2);
 
+    this.angle += (w*dt)%(2*Math.PI);
+    this.group.rotation.y = this.angle+Math.PI/2;
+  }
 
 }
 

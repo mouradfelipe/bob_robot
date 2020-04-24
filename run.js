@@ -1,6 +1,6 @@
 //Game Logic
 var update = () => {
-  
+  robot.move();
 };
 
 //Draw Scene

@@ -23,6 +23,27 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
 });
 
+window.addEventListener('keydown',(e) => {
+  if(e.keyCode == 87)//Tecla W
+  {
+    robot.setVelocityWheels(0.1,0,0.1); 
+  
+  }else if(e.keyCode == 83) //Tecla S
+  {
+    
+    robot.setVelocityWheels(-0.1,0,-0.1);
+  
+  }else if(e.keyCode == 65) // Left Arrow
+  {
+    robot.setRotation(0,-0.2,0);
+  } 
+  else if(e.keyCode == 68) // Right Arrow
+  {
+    
+    robot.setRotation(0,0.2,0);
+  } 
+
+});
 
 function setFloor(x,y,z,proportion){
 
@@ -63,9 +84,9 @@ function init(){
   let z = 0.0;
   let proportion = 1;
 
-  let cameraPositionX = 0.45*proportion;
-  let cameraPositionY = 0.6*proportion;
-  let cameraPositionZ = 8*proportion;
+  let cameraPositionX = 10*proportion;
+  let cameraPositionY = 5*proportion;
+  let cameraPositionZ = 13*proportion;
 
   
   robot = new Robot(x,y,z,proportion);
