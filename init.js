@@ -33,11 +33,11 @@ window.addEventListener('keydown',(e) => {
     
     robot.setVelocityWheels(-0.1,0,-0.1);
   
-  }else if(e.keyCode == 65) // Left Arrow
+  }else if(e.keyCode == 68) // Left Arrow
   {
     robot.setRotation(0,-0.2,0);
   } 
-  else if(e.keyCode == 68) // Right Arrow
+  else if(e.keyCode == 65) // Right Arrow
   {
     
     robot.setRotation(0,0.2,0);
