@@ -15,4 +15,4 @@ var gameLoop = () => {
   render();
 };
 
-gameLoop();
+export default gameLoop;
