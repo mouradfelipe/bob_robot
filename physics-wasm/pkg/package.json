@@ -1,0 +1,15 @@
+{
+  "name": "physics-wasm",
+  "collaborators": [
+    "Rodrigo Tanaka <krodrigo71008@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "physics_wasm_bg.wasm",
+    "physics_wasm.js",
+    "physics_wasm.d.ts"
+  ],
+  "module": "physics_wasm.js",
+  "types": "physics_wasm.d.ts",
+  "sideEffects": false
+}
