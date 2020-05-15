@@ -18,6 +18,7 @@ pub enum Parts{
     BASE = 0,
     LEFT_WHEEL = 1,
     RIGHT_WHEEL = 2,
+    WEIGHT = 3,
 }
 
 #[wasm_bindgen]
@@ -104,10 +105,15 @@ impl PhysicsWorld {
         right_wheel_desc.set_body_shift(na::Vector3::x()*(0.5));
         right_wheel_desc.set_parent_shift(na::Vector3::y()*-0.6);
 
+        let weight_joint = nphysics3d::joint::FixedJoint::new(na::Isometry3::new(na::Vector3::y()*0.8, na::zero()));
+        let weight_desc = segway_desc.add_child(weight_joint);
+        weight_desc.set_name("Weight".to_owned());
+
         let segway_handle = bodies.insert(segway_desc.build());
         let base = nphysics3d::object::BodyPartHandle(segway_handle, Parts::BASE as usize);
         let left_wheel = nphysics3d::object::BodyPartHandle(segway_handle, Parts::LEFT_WHEEL as usize);
         let right_wheel = nphysics3d::object::BodyPartHandle(segway_handle, Parts::RIGHT_WHEEL as usize);
+        let weight = nphysics3d::object::BodyPartHandle(segway_handle, Parts::WEIGHT as usize);
         
         let body_base_shape =ncollide3d::shape::ShapeHandle::new(
             ncollide3d::shape::ConvexHull::try_from_points(
@@ -124,7 +130,7 @@ impl PhysicsWorld {
         );
         let body_collider = nphysics3d::object::ColliderDesc::new(body_shape)
             //.translation(na::Vector3::y()*0.6)
-            .density(1.0)
+            .density(0.5)
             .build(base);
         colliders.insert(body_collider);
         //let body_handle_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Cuboid::new(na::Vector3::new(0.08, 1.18, 0.08)/2.0));
@@ -139,7 +145,7 @@ impl PhysicsWorld {
             ).unwrap()
         );
         let wheel_collider_desc = nphysics3d::object::ColliderDesc::new(wheel_shape)
-            .density(1.0)
+            .density(5.0)
             .rotation(na::Vector3::z() * f64::frac_pi_2());
 
         let left_wheel_collider = wheel_collider_desc.build(left_wheel);
@@ -147,6 +153,13 @@ impl PhysicsWorld {
 
         let right_wheel_collider = wheel_collider_desc.build(right_wheel);
         colliders.insert(right_wheel_collider);
+
+        let weight_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Ball::new(0.05));
+        let weight_collider = nphysics3d::object::ColliderDesc::new(weight_shape)
+            //.translation(na::Vector3::y()*0.6)
+            .density(4e3)
+            .build(weight);
+        colliders.insert(weight_collider);
 
         let segway = SegwayParts {
             segway_handle,

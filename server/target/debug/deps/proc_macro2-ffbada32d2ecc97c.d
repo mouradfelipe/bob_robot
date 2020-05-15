@@ -1,0 +1,10 @@
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\debug\deps\proc_macro2-ffbada32d2ecc97c.rmeta: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\strnom.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\fallback.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\wrapper.rs
+
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\debug\deps\libproc_macro2-ffbada32d2ecc97c.rlib: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\strnom.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\fallback.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\wrapper.rs
+
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\debug\deps\proc_macro2-ffbada32d2ecc97c.d: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\strnom.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\fallback.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\wrapper.rs
+
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\lib.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\strnom.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\fallback.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\proc-macro2-0.4.30\src\wrapper.rs:

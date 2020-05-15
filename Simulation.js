@@ -22,6 +22,7 @@ class Simulation {
     this.scene.add(this.robot.body);
     this.scene.add(this.robot.leftWheel);
     this.scene.add(this.robot.rightWheel);
+    this.scene.add(this.robot.weight);
     this.setFloor(x, 0, z, proportion);
     this.setLight(x, y, z, 500);
     this.camera.position.set(10 * proportion, 5 * proportion, 13 * proportion);
@@ -92,13 +93,17 @@ class Simulation {
     rotation = this.physics.get_part_rotation(wasmlib.Parts.RIGHT_WHEEL);
     this.robot.rightWheel.matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
 
-    let pos = this.physics.get_part_position(wasmlib.Parts.BASE);
-    let rot = this.physics.get_part_rotation(wasmlib.Parts.BASE);
-    let matrix = new THREE.Matrix4().compose(pos, rot, new THREE.Vector3(1, 1, 1));
-    let basis_x = new THREE.Vector3();
-    let basis_y = new THREE.Vector3();
-    let basis_z = new THREE.Vector3();
-    matrix.extractBasis(basis_x, basis_y, basis_z);
+    position = this.physics.get_part_position(wasmlib.Parts.WEIGHT);
+    rotation = this.physics.get_part_rotation(wasmlib.Parts.WEIGHT);
+    this.robot.weight.matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
+
+    // let pos = this.physics.get_part_position(wasmlib.Parts.BASE);
+    // let rot = this.physics.get_part_rotation(wasmlib.Parts.BASE);
+    // let matrix = new THREE.Matrix4().compose(pos, rot, new THREE.Vector3(1, 1, 1));
+    // let basis_x = new THREE.Vector3();
+    // let basis_y = new THREE.Vector3();
+    // let basis_z = new THREE.Vector3();
+    // matrix.extractBasis(basis_x, basis_y, basis_z);
     //let inclination = -Math.asin(basis_z.y);
     //this.physics.set_left_motor_target_speed(50 * inclination);
     //this.physics.set_right_motor_target_speed(50 * inclination);

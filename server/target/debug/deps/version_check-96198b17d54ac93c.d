@@ -1,0 +1,10 @@
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\debug\deps\version_check-96198b17d54ac93c.rmeta: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\version.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\channel.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\date.rs
+
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\debug\deps\libversion_check-96198b17d54ac93c.rlib: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\version.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\channel.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\date.rs
+
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\debug\deps\version_check-96198b17d54ac93c.d: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\version.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\channel.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\date.rs
+
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\lib.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\version.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\channel.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\version_check-0.9.1\src\date.rs:

@@ -1,0 +1,11 @@
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\release\deps\state-a314a88ba889d0b8.rmeta: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\ident_hash.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\container.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\storage.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\init.rs
+
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\release\deps\libstate-a314a88ba889d0b8.rlib: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\ident_hash.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\container.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\storage.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\init.rs
+
+C:\Users\Rodrigo_Tanaka\Desktop\Programação\bob_robot\server\target\release\deps\state-a314a88ba889d0b8.d: C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\lib.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\ident_hash.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\container.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\storage.rs C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\init.rs
+
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\lib.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\ident_hash.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\container.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\storage.rs:
+C:\Users\Rodrigo_Tanaka\.cargo\registry\src\github.com-1ecc6299db9ec823\state-0.4.1\src\init.rs:

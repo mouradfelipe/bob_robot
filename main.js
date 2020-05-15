@@ -20,19 +20,19 @@ function main() {
   window.addEventListener("keydown", (e) => {
     if (e.keyCode == 87) {
       //Tecla W
-      simulation.robot.accelerate(0.1);
+      simulation.robot.accelerate(0.3);
       simulation.robot.accelerating = true;
     } else if (e.keyCode == 83) {
       //Tecla S
-      simulation.robot.accelerate(-0.1);
+      simulation.robot.accelerate(-0.3);
       simulation.robot.accelerating = true;
     } else if (e.keyCode == 68) {
       // Left Arrow
-      simulation.robot.angularAccelerate(0.1);
+      simulation.robot.angularAccelerate(-0.3);
       simulation.robot.angularAccelerating = true;
     } else if (e.keyCode == 65) {
       // Right Arrow
-      simulation.robot.angularAccelerate(-0.1);
+      simulation.robot.angularAccelerate(0.3);
       simulation.robot.angularAccelerating = true;
     }
 

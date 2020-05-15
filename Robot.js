@@ -3,6 +3,7 @@ class Robot {
     this.generateBodyHead(proportion);
     this.generateRightWheel(proportion);
     this.generateLeftWheel(proportion);
+    this.generateWeight(proportion);
     this.speed = 0;
     this.angularSpeed = 0;
     this.accelerating = false;
@@ -29,6 +30,23 @@ class Robot {
     let leftWheelMesh = new THREE.Mesh(geometry, material);
     leftWheelMesh.rotation.z = Math.PI / 2;
     this.leftWheel.add(leftWheelMesh);
+
+    geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
+    material = new THREE.MeshPhysicalMaterial({
+      color: 0xffbda1,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.2,
+      metalness: 0.5,
+      reflectivity: 0.5,
+      flatShading: true,
+    });
+    let leftWheelDecoration = new THREE.Mesh(geometry, material);
+    leftWheelDecoration.position.x += 0.1;
+    this.leftWheel.add(leftWheelDecoration);
+
   }
 
   generateRightWheel(proportion = 1) {
@@ -49,6 +67,22 @@ class Robot {
     let rightWheelMesh = new THREE.Mesh(geometry, material);
     rightWheelMesh.rotation.z = Math.PI / 2;
     this.rightWheel.add(rightWheelMesh);
+
+    geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
+    material = new THREE.MeshPhysicalMaterial({
+      color: 0xffbda1,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.2,
+      metalness: 0.5,
+      reflectivity: 0.5,
+      flatShading: true,
+    });
+    let rightWheelDecoration = new THREE.Mesh(geometry, material);
+    rightWheelDecoration.position.x += -0.1;
+    this.rightWheel.add(rightWheelDecoration);
   }
 
   generateBodyHead(proportion = 1) {
@@ -85,6 +119,23 @@ class Robot {
     let head = new THREE.Mesh(geometry, material);
     head.position.y = 0.6;
     this.body.add(head);
+  }
+
+  generateWeight(proportion = 1) {
+    let geometry = new THREE.SphereGeometry(proportion * 0.05, 16, 8);
+    let material = new THREE.MeshPhysicalMaterial({
+      color: 0xc40707,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.3,
+      reflectivity: 0.3,
+      flatShading: true,
+      vertexColors: true,
+    });
+    this.weight = new THREE.Mesh(geometry, material);
+    this.weight.matrixAutoUpdate = false;
   }
 
   accelerate(a) {
