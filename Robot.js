@@ -119,6 +119,30 @@ class Robot {
     let head = new THREE.Mesh(geometry, material);
     head.position.y = 0.6;
     this.body.add(head);
+
+    geometry = new THREE.BoxGeometry(0.2 * proportion, 0.2 * proportion, 0.2 * proportion, 16, 8);
+
+    material = new THREE.MeshPhysicalMaterial({
+      color: 0xffbda1,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.2,
+      metalness: 0.5,
+      reflectivity: 0.5,
+      flatShading: true,
+    });
+
+    let headDecoration1 = new THREE.Mesh(geometry, material);
+    headDecoration1.position.z = 0.5;
+    headDecoration1.position.x = 0.4;
+    head.add(headDecoration1);
+
+    let headDecoration2 = new THREE.Mesh(geometry, material);
+    headDecoration2.position.z = 0.5;
+    headDecoration1.position.x = -0.4;
+    head.add(headDecoration2);
   }
 
   generateWeight(proportion = 1) {

@@ -35,7 +35,7 @@ function main() {
       simulation.robot.angularAccelerate(0.3);
       simulation.robot.angularAccelerating = true;
     }
-
+    console.log("pressed");
   });
 
   //Run Gameloop (update, render, repeat)

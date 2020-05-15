@@ -93,7 +93,7 @@ impl PhysicsWorld {
         left_axis.disable_min_angle();
         let left_wheel_desc = segway_desc.add_child(left_axis);
         left_wheel_desc.set_name("LeftWheel".to_owned());
-        left_wheel_desc.set_body_shift(na::Vector3::x()*(-0.5));
+        left_wheel_desc.set_body_shift(na::Vector3::x()*(-0.6));
         left_wheel_desc.set_parent_shift(na::Vector3::y()*-0.6);
         
         let mut right_axis = nphysics3d::joint::RevoluteJoint::new(na::Vector3::x_axis(), 0.0);
@@ -102,7 +102,7 @@ impl PhysicsWorld {
         right_axis.disable_min_angle();
         let right_wheel_desc = segway_desc.add_child(right_axis);
         right_wheel_desc.set_name("RightWheel".to_owned());
-        right_wheel_desc.set_body_shift(na::Vector3::x()*(0.5));
+        right_wheel_desc.set_body_shift(na::Vector3::x()*(0.6));
         right_wheel_desc.set_parent_shift(na::Vector3::y()*-0.6);
 
         let weight_joint = nphysics3d::joint::FixedJoint::new(na::Isometry3::new(na::Vector3::y()*0.8, na::zero()));
@@ -146,6 +146,9 @@ impl PhysicsWorld {
         );
         let wheel_collider_desc = nphysics3d::object::ColliderDesc::new(wheel_shape)
             .density(5.0)
+            .material(nphysics3d::material::MaterialHandle::new(
+                nphysics3d::material::BasicMaterial::new(0.1, 5.0)
+            ))
             .rotation(na::Vector3::z() * f64::frac_pi_2());
 
         let left_wheel_collider = wheel_collider_desc.build(left_wheel);
@@ -157,7 +160,7 @@ impl PhysicsWorld {
         let weight_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Ball::new(0.05));
         let weight_collider = nphysics3d::object::ColliderDesc::new(weight_shape)
             //.translation(na::Vector3::y()*0.6)
-            .density(4e3)
+            .density(4e4)
             .build(weight);
         colliders.insert(weight_collider);
 

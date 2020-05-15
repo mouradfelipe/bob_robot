@@ -35,6 +35,7 @@ class Simulation {
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.physics.set_max_left_motor_torque(50);
     this.physics.set_max_right_motor_torque(50);
+    this.physics.set_timestep(1 / 240);
   }
 
   setFloor(x, y, z, proportion) {
@@ -80,6 +81,9 @@ class Simulation {
   }
 
   update() {
+    this.physics.step();
+    this.physics.step();
+    this.physics.step();
     this.physics.step();
     let position = this.physics.get_part_position(wasmlib.Parts.BASE);
     let rotation = this.physics.get_part_rotation(wasmlib.Parts.BASE);
