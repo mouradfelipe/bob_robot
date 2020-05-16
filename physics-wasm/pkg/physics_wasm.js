@@ -1,4 +1,4 @@
-import { Vector3, Quaternion } from '../../../three.module.js';
+import { Vector3, Quaternion } from '../../three.module.js';
 
 let wasm;
 
@@ -303,11 +303,11 @@ async function init(input) {
     }
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbg_new_cb1db1ea3c31e9ef = function(arg0, arg1, arg2) {
+    imports.wbg.__wbg_new_d005afc382da2d27 = function(arg0, arg1, arg2) {
         var ret = new Vector3(arg0, arg1, arg2);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbg_new_286d6faa1d2cea62 = function(arg0, arg1, arg2, arg3) {
+    imports.wbg.__wbg_new_cfaf5849c37b5b62 = function(arg0, arg1, arg2, arg3) {
         var ret = new Quaternion(arg0, arg1, arg2, arg3);
         return addHeapObject(ret);
     };
