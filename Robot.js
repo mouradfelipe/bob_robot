@@ -1,129 +1,22 @@
-
-
-class Robot{
-
-  constructor(x,y,z,proportion = 1){
-    
-    this.group = new THREE.Group();
-    this.axis = generateAxis(x,y,z,proportion);
-    this.body = generateBody(x,y,z,proportion);
-    this.rightWheels = generateRightWheels(x,y,z,proportion);
-    this.leftWheels = generateLeftWheels(x,y,z,proportion);
-    this.head = generateHead(x,y,z,proportion);
-
-    this.group.add(this.axis);
-    this.group.add(this.body);
-    this.group.add(this.rightWheels);
-    this.group.add(this.leftWheels);
-    this.group.add(this.head);  
-    
-    this.linearSpeed = new THREE.Vector3(0,0,0);
-    this.angularSpeed = new THREE.Vector3(0,0,0);
-    this.angle = 0;
-    
-    this.maxLinearSpeed = 6;
-    this.maxAngularSpeed = 2;
-    
-  }
-  
-  setVelocityWheels(vx,vy,vz){
-    this.linearSpeed.add(new THREE.Vector3(vx,vy,vz));
-    //this.group.position.add(this.linearSpeed);
-    this.linearSpeed.clampLength(-this.maxLinearSpeed,this.maxLinearSpeed);
+class Robot {
+  constructor(proportion = 1) {
+    this.generateBodyHead(proportion);
+    this.generateRightWheel(proportion);
+    this.generateLeftWheel(proportion);
+    this.generateWeight(proportion);
+    this.speed = 0;
+    this.angularSpeed = 0;
+    this.accelerating = false;
+    this.angularAccelerating = false;
+    this.MAX_SPEED = 5;
+    this.MAX_ANGULAR_SPEED = 3.1415926535897932384626;
   }
 
-  setRotation(wx,wy,wz){
-    this.angularSpeed.add(new THREE.Vector3(wx,wy,wz));
-    this.angularSpeed.clampLength(-this.maxAngularSpeed,this.maxAngularSpeed);
-  }
-
-  move(){
-
-    let dt = 1/60;
-    let v = this.linearSpeed.length()*Math.sign(this.linearSpeed.dot(new THREE.Vector3(1,1,1)));
-    let w = this.angularSpeed.length()*Math.sign(this.angularSpeed.dot(new THREE.Vector3(1,1,1)));
-    
-    this.group.position.x += v*dt*Math.sin(this.angle + w*dt/2);
-    this.group.position.z += v*dt*Math.cos(this.angle + w*dt/2);
-
-    this.angle += (w*dt)%(2*Math.PI);
-    this.group.rotation.y = this.angle+Math.PI/2;
-  }
-
-}
-
-
-function generateRightWheels(x,y,z, proportion = 1){
-  let geometry = new THREE.TorusGeometry(proportion*0.2,proportion*0.08,20,60);
-  let material = new THREE.MeshPhysicalMaterial( { 
-    color: 0xc40707,
-    depthTest: true,
-    depthWrite: true,
-    side: THREE.DoubleSide,
-    emissive: 0x000000,
-    roughness: 0.3,
-    reflectivity: 0.3,
-    flatShading: true,
-    vertexColors: true
-    });
-  let torus = new THREE.Mesh( geometry, material );
-  //torus.position.set(0,-3,0.35);
-  torus.position.set(x,y,z+0.35*proportion);
-  //scene.add( torus );
-  return torus;
-}
-
-function generateLeftWheels(x,y,z,proportion = 1){
-  let geometry = new THREE.TorusGeometry(proportion*0.2,proportion*0.08,20,60);
-  let material = new THREE.MeshPhysicalMaterial( { 
-    color: 0xc40707,
-    depthTest: true,
-    depthWrite: true,
-    side: THREE.DoubleSide,
-    emissive: 0x000000,
-    roughness: 0.3,
-    reflectivity: 0.3,
-    flatShading: true,
-    vertexColors: true
-    });
-  let torus = new THREE.Mesh( geometry, material );
-  //torus.position.set(0,-3,0.35);
-  torus.position.set(x,y,z-0.35*proportion);
-  //scene.add( torus );
-  return torus;
-}
-
-function generateAxis(x,y,z,proportion=1){
-
-  let geometry = new THREE.CylinderGeometry(0.2*proportion,0.2*proportion,0.75*proportion,64,1,false);
-    
-  let material = new THREE.MeshPhysicalMaterial( { 
-    color: 0xffbda1,
-    depthTest: true,
-    depthWrite: true,
-    side: THREE.DoubleSide,
-    emissive: 0x000000,
-    roughness: 0.2,
-    metalness: 0.5,
-    reflectivity: 0.5,
-    flatShading: true
-    });
-    
-    let cylinder = new THREE.Mesh( geometry, material );
-    
-    cylinder.rotateZ(Math.PI/2);
-    cylinder.rotateX(Math.PI/2);
-    cylinder.position.set(x,y,z);
-    //cylinder.position.set(0,-3,0);
-    //scene.add( cylinder );
-    return cylinder;
-}
-
-function generateHead(x,y,z,proportion = 1){
-  
-  let geometry = new THREE.TorusGeometry(0.05*1.25*proportion,1.25*0.3*proportion,14,21,4);
-  
-  let material = new THREE.MeshPhysicalMaterial( { 
+  generateLeftWheel(proportion = 1) {
+    this.leftWheel = new THREE.Object3D();
+    this.leftWheel.matrixAutoUpdate = false;
+    let geometry = new THREE.CylinderGeometry(proportion * 0.5, proportion * 0.5, proportion * 0.2, 64);
+    let material = new THREE.MeshPhysicalMaterial({
       color: 0xc40707,
       depthTest: true,
       depthWrite: true,
@@ -132,20 +25,14 @@ function generateHead(x,y,z,proportion = 1){
       roughness: 0.3,
       reflectivity: 0.3,
       flatShading: true,
-      vertexColors: true
-  });
-  let torus = new THREE.Mesh( geometry, material );
-  torus.position.set(x,y+proportion,z);
-  //torus.position.set(0,-2,0);
-  //scene.add( torus );
-  return torus;
-}
+      vertexColors: true,
+    });
+    let leftWheelMesh = new THREE.Mesh(geometry, material);
+    leftWheelMesh.rotation.z = Math.PI / 2;
+    this.leftWheel.add(leftWheelMesh);
 
-function generateBody(x,y,z,proportion = 1){
-
-  let geometry = new THREE.CylinderGeometry(0.18*proportion,0.36*proportion,proportion,16,10,true);
-  
-  let material = new THREE.MeshPhysicalMaterial( { 
+    geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
+    material = new THREE.MeshPhysicalMaterial({
       color: 0xffbda1,
       depthTest: true,
       depthWrite: true,
@@ -154,12 +41,143 @@ function generateBody(x,y,z,proportion = 1){
       roughness: 0.2,
       metalness: 0.5,
       reflectivity: 0.5,
-      flatShading: true
-  });
-  
-  let cylinder = new THREE.Mesh( geometry, material );
-  //cylinder.rotateZ(Math.PI);
-  cylinder.position.set(x,y+0.3*proportion,z);
-  //scene.add( cylinder );
-  return cylinder;
+      flatShading: true,
+    });
+    let leftWheelDecoration = new THREE.Mesh(geometry, material);
+    leftWheelDecoration.position.x += 0.1;
+    this.leftWheel.add(leftWheelDecoration);
+
+  }
+
+  generateRightWheel(proportion = 1) {
+    this.rightWheel = new THREE.Object3D();
+    this.rightWheel.matrixAutoUpdate = false;
+    let geometry = new THREE.CylinderGeometry(proportion * 0.5, proportion * 0.5, proportion * 0.2, 64);
+    let material = new THREE.MeshPhysicalMaterial({
+      color: 0xc40707,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.3,
+      reflectivity: 0.3,
+      flatShading: true,
+      vertexColors: true,
+    });
+    let rightWheelMesh = new THREE.Mesh(geometry, material);
+    rightWheelMesh.rotation.z = Math.PI / 2;
+    this.rightWheel.add(rightWheelMesh);
+
+    geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
+    material = new THREE.MeshPhysicalMaterial({
+      color: 0xffbda1,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.2,
+      metalness: 0.5,
+      reflectivity: 0.5,
+      flatShading: true,
+    });
+    let rightWheelDecoration = new THREE.Mesh(geometry, material);
+    rightWheelDecoration.position.x += -0.1;
+    this.rightWheel.add(rightWheelDecoration);
+  }
+
+  generateBodyHead(proportion = 1) {
+    let geometry = new THREE.ConeGeometry(0.4 * proportion, 1.2 * proportion, 16);
+
+    let material = new THREE.MeshPhysicalMaterial({
+      color: 0xffbda1,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.2,
+      metalness: 0.5,
+      reflectivity: 0.5,
+      flatShading: true,
+    });
+
+    this.body = new THREE.Mesh(geometry, material);
+    this.body.matrixAutoUpdate = false;
+    geometry = new THREE.SphereGeometry(0.5 * proportion, 16, 8);
+
+    material = new THREE.MeshPhysicalMaterial({
+      color: 0xc40707,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.3,
+      reflectivity: 0.3,
+      flatShading: true,
+      vertexColors: true,
+    });
+
+    let head = new THREE.Mesh(geometry, material);
+    head.position.y = 0.6;
+    this.body.add(head);
+
+    geometry = new THREE.BoxGeometry(0.2 * proportion, 0.2 * proportion, 0.2 * proportion, 16, 8);
+
+    material = new THREE.MeshPhysicalMaterial({
+      color: 0xffbda1,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.2,
+      metalness: 0.5,
+      reflectivity: 0.5,
+      flatShading: true,
+    });
+
+    let headDecoration1 = new THREE.Mesh(geometry, material);
+    headDecoration1.position.z = 0.5;
+    headDecoration1.position.x = 0.4;
+    head.add(headDecoration1);
+
+    let headDecoration2 = new THREE.Mesh(geometry, material);
+    headDecoration2.position.z = 0.5;
+    headDecoration1.position.x = -0.4;
+    head.add(headDecoration2);
+  }
+
+  generateWeight(proportion = 1) {
+    let geometry = new THREE.SphereGeometry(proportion * 0.05, 16, 8);
+    let material = new THREE.MeshPhysicalMaterial({
+      color: 0xc40707,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      emissive: 0x000000,
+      roughness: 0.3,
+      reflectivity: 0.3,
+      flatShading: true,
+      vertexColors: true,
+    });
+    this.weight = new THREE.Mesh(geometry, material);
+    this.weight.matrixAutoUpdate = false;
+  }
+
+  accelerate(a) {
+    this.speed += a;
+    if (this.speed > this.MAX_SPEED)
+      this.speed = this.MAX_SPEED
+    if (this.speed < -this.MAX_SPEED)
+      this.speed = -this.MAX_SPEED
+  }
+
+  angularAccelerate(a) {
+    this.angularSpeed += a;
+    if (this.angularSpeed > this.MAX_ANGULAR_SPEED)
+      this.angularSpeed = this.MAX_ANGULAR_SPEED
+    if (this.angularSpeed < -this.MAX_ANGULAR_SPEED)
+      this.angularSpeed = -this.MAX_ANGULAR_SPEED
+  }
+
 }
+
+export default Robot;
