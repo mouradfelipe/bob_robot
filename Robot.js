@@ -29,6 +29,8 @@ class Robot {
     });
     let leftWheelMesh = new THREE.Mesh(geometry, material);
     leftWheelMesh.rotation.z = Math.PI / 2;
+    leftWheelMesh.receiveShadow = true;
+    leftWheelMesh.castShadow = true;
     this.leftWheel.add(leftWheelMesh);
 
     geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
@@ -44,6 +46,8 @@ class Robot {
       flatShading: true,
     });
     let leftWheelDecoration = new THREE.Mesh(geometry, material);
+    leftWheelDecoration.receiveShadow = true;
+    leftWheelDecoration.castShadow = true;
     leftWheelDecoration.position.x += 0.1;
     this.leftWheel.add(leftWheelDecoration);
 
@@ -66,6 +70,8 @@ class Robot {
     });
     let rightWheelMesh = new THREE.Mesh(geometry, material);
     rightWheelMesh.rotation.z = Math.PI / 2;
+    rightWheelMesh.receiveShadow = true;
+    rightWheelMesh.castShadow = true;
     this.rightWheel.add(rightWheelMesh);
 
     geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
@@ -82,6 +88,8 @@ class Robot {
     });
     let rightWheelDecoration = new THREE.Mesh(geometry, material);
     rightWheelDecoration.position.x += -0.1;
+    rightWheelDecoration.receiveShadow = true;
+    rightWheelDecoration.castShadow = true;
     this.rightWheel.add(rightWheelDecoration);
   }
 
@@ -101,6 +109,8 @@ class Robot {
     });
 
     this.body = new THREE.Mesh(geometry, material);
+    this.body.receiveShadow = true;
+    this.body.castShadow = true;
     this.body.matrixAutoUpdate = false;
     geometry = new THREE.SphereGeometry(0.5 * proportion, 16, 8);
 
@@ -112,12 +122,14 @@ class Robot {
       emissive: 0x000000,
       roughness: 0.3,
       reflectivity: 0.3,
-      flatShading: true,
+      flatShading: false,
       vertexColors: true,
     });
 
     let head = new THREE.Mesh(geometry, material);
     head.position.y = 0.6;
+    head.receiveShadow = true;
+    head.castShadow = true;
     this.body.add(head);
 
     geometry = new THREE.BoxGeometry(0.2 * proportion, 0.2 * proportion, 0.2 * proportion, 16, 8);
@@ -136,12 +148,16 @@ class Robot {
 
     let headDecoration1 = new THREE.Mesh(geometry, material);
     headDecoration1.position.z = 0.5;
-    headDecoration1.position.x = 0.4;
+    headDecoration1.position.x = 0.2;
+    headDecoration1.receiveShadow = true;
+    headDecoration1.castShadow = true;
     head.add(headDecoration1);
 
     let headDecoration2 = new THREE.Mesh(geometry, material);
     headDecoration2.position.z = 0.5;
-    headDecoration1.position.x = -0.4;
+    headDecoration2.position.x = -0.2;
+    headDecoration1.receiveShadow = true;
+    headDecoration2.receiveShadow = true;
     head.add(headDecoration2);
   }
 
@@ -159,6 +175,8 @@ class Robot {
       vertexColors: true,
     });
     this.weight = new THREE.Mesh(geometry, material);
+    this.weight.receiveShadow = true;
+    this.weight.castShadow = true;
     this.weight.matrixAutoUpdate = false;
   }
 
