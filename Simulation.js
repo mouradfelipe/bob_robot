@@ -23,7 +23,7 @@ class Simulation {
     this.scene.add(this.robot.leftWheel);
     this.scene.add(this.robot.rightWheel);
     this.scene.add(this.robot.weight);
-    this.setFloor(x, 0, z, proportion);
+    this.setArena(x, 0, z, proportion);
     this.setLight(x, y, z, 75);
     this.setRamp();
     this.setObstacles();
@@ -37,18 +37,43 @@ class Simulation {
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.physics.set_max_left_motor_torque(50);
     this.physics.set_max_right_motor_torque(50);
-    this.physics.set_timestep(1 / 240);
+    this.physics.set_timestep(1 / 120);
   }
 
-  setFloor(x, y, z, proportion) {
+  setArena(x, y, z, proportion) {
     let floorGeometry = new THREE.BoxGeometry(
       100 * proportion,
-      2*proportion,
+      2 * proportion,
       100 * proportion,
       10,
       10
     );
     let floorMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x3d2100,
+      emissive: 0x000000,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      roughness: 0.8,
+      reflectivity: 0.2,
+      flatShading: true,
+      vertexColors: true,
+    });
+    let wall1Geometry = new THREE.BoxGeometry(
+      2 * proportion,
+      20 * proportion,
+      100 * proportion,
+      10,
+      10
+    );
+    let wall2Geometry = new THREE.BoxGeometry(
+      100 * proportion,
+      20 * proportion,
+      2 * proportion,
+      10,
+      10
+    );
+    let wallMaterial = new THREE.MeshPhysicalMaterial({
       color: 0x3d2100,
       emissive: 0x000000,
       depthTest: true,
@@ -65,17 +90,37 @@ class Simulation {
     floor.castShadow = true;
     floor.position.set(x, y - proportion, z);
     this.scene.add(floor);
+    let wall1 = new THREE.Mesh(wall1Geometry, wallMaterial);
+    wall1.receiveShadow = true;
+    wall1.castShadow = true;
+    wall1.position.set(x + 50 * proportion + proportion, y + 10 * proportion, z);
+    this.scene.add(wall1);
+    let wall2 = new THREE.Mesh(wall2Geometry, wallMaterial);
+    wall2.receiveShadow = true;
+    wall2.castShadow = true;
+    wall2.position.set(x, y + 10 * proportion, z + 50 * proportion + proportion);
+    this.scene.add(wall2);
+    let wall3 = new THREE.Mesh(wall1Geometry, wallMaterial);
+    wall3.receiveShadow = true;
+    wall3.castShadow = true;
+    wall3.position.set(x - 50 * proportion - proportion, y + 10 * proportion, z);
+    this.scene.add(wall3);
+    let wall4 = new THREE.Mesh(wall2Geometry, wallMaterial);
+    wall4.receiveShadow = true;
+    wall4.castShadow = true;
+    wall4.position.set(x, y + 10 * proportion, z - 50 * proportion - proportion);
+    this.scene.add(wall4);
   }
 
   setRamp() {
     let rampGeometry = new THREE.Geometry();
     rampGeometry.vertices.push(
-      new THREE.Vector3(-4,0,0), //0
-      new THREE.Vector3(4,0,0),  //1
-      new THREE.Vector3(-4,2,4), //2
-      new THREE.Vector3(4,2,4),  //3
-      new THREE.Vector3(-4,0,4), //4
-      new THREE.Vector3(4,0,4)   //5
+      new THREE.Vector3(-4, 0, 0), //0
+      new THREE.Vector3(4, 0, 0),  //1
+      new THREE.Vector3(-4, 2, 4), //2
+      new THREE.Vector3(4, 2, 4),  //3
+      new THREE.Vector3(-4, 0, 4), //4
+      new THREE.Vector3(4, 0, 4)   //5
     )
     rampGeometry.faces.push(
       new THREE.Face3(0, 1, 2), //front
@@ -122,7 +167,7 @@ class Simulation {
       vertexColors: true,
     });
     let obstacles = [];
-    for(let i = 0; i < 4*8; i++) {
+    for (let i = 0; i < 4 * 8; i++) {
       let obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
       obstacle.matrixAutoUpdate = false;
       obstacle.receiveShadow = true;
@@ -138,7 +183,7 @@ class Simulation {
 
     let light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(24, 80, 40);
-    light.target.position.set(0,0,0);
+    light.target.position.set(0, 0, 0);
     light.castShadow = true;
 
     light.shadow.camera = new THREE.OrthographicCamera(
@@ -162,8 +207,6 @@ class Simulation {
   update() {
     this.physics.step();
     this.physics.step();
-    this.physics.step();
-    this.physics.step();
     let position = this.physics.get_part_position(wasmlib.Parts.BASE);
     let rotation = this.physics.get_part_rotation(wasmlib.Parts.BASE);
     this.robot.body.matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
@@ -180,7 +223,7 @@ class Simulation {
     rotation = this.physics.get_part_rotation(wasmlib.Parts.WEIGHT);
     this.robot.weight.matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
 
-    for (let i = 0; i< this.obstacles.length; i++) {
+    for (let i = 0; i < this.obstacles.length; i++) {
       position = this.physics.get_obstacle_position(i);
       rotation = this.physics.get_obstacle_rotation(i);
       this.obstacles[i].matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
