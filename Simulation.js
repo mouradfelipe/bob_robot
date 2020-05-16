@@ -26,6 +26,7 @@ class Simulation {
     this.setFloor(x, 0, z, proportion);
     this.setLight(x, y, z, 75);
     this.setRamp();
+    this.setObstacles();
     this.camera.position.set(10 * proportion, 5 * proportion, 13 * proportion);
     this.camera.lookAt(this.robot.body.getWorldPosition());
 
@@ -106,6 +107,32 @@ class Simulation {
     ramp.position.set(0, 0, 4);
     this.scene.add(ramp);
   }
+
+  setObstacles() {
+    let obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
+    let obstacleMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x2266aa,
+      emissive: 0x000000,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      roughness: 0.8,
+      reflectivity: 0.2,
+      flatShading: true,
+      vertexColors: true,
+    });
+    let obstacles = [];
+    for(let i = 0; i < 4*8; i++) {
+      let obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+      obstacle.matrixAutoUpdate = false;
+      obstacle.receiveShadow = true;
+      obstacle.castShadow = true;
+      this.scene.add(obstacle);
+      obstacles.push(obstacle);
+    }
+    this.obstacles = obstacles;
+  }
+
   setLight(x, y, z, adjuster) {
     this.scene.add(new THREE.AmbientLight(0x3d4143));
 
@@ -153,6 +180,11 @@ class Simulation {
     rotation = this.physics.get_part_rotation(wasmlib.Parts.WEIGHT);
     this.robot.weight.matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
 
+    for (let i = 0; i< this.obstacles.length; i++) {
+      position = this.physics.get_obstacle_position(i);
+      rotation = this.physics.get_obstacle_rotation(i);
+      this.obstacles[i].matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
+    }
     // let pos = this.physics.get_part_position(wasmlib.Parts.BASE);
     // let rot = this.physics.get_part_rotation(wasmlib.Parts.BASE);
     // let matrix = new THREE.Matrix4().compose(pos, rot, new THREE.Vector3(1, 1, 1));

@@ -58,6 +58,7 @@ pub struct PhysicsWorld {
     force_generators: nphysics3d::force_generator::DefaultForceGeneratorSet<f64>,
 
     segway: SegwayParts,
+    obstacles: Vec<nphysics3d::object::DefaultBodyHandle>
 }
 
 #[wasm_bindgen]
@@ -224,8 +225,33 @@ impl PhysicsWorld {
         return segway_handle;
     }
 
+    fn create_dynamic_objects(bodies : &mut nphysics3d::object::DefaultBodySet<f64>, colliders : &mut nphysics3d::object::DefaultColliderSet<f64>, count: (usize, usize)) -> Vec<nphysics3d::object::DefaultBodyHandle> {
+        let separation = 2.0;
+        let mut obstacles : Vec<nphysics3d::object::DefaultBodyHandle> = Vec::new();
+        obstacles.reserve(count.0*count.1);
+        
+        let mut obstacle_desc = nphysics3d::object::RigidBodyDesc::new()
+            .status(nphysics3d::object::BodyStatus::Dynamic);
+        let obstacle_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Cuboid::new(na::Vector3::new(1.0, 1.0, 1.0)/2.0));
+        let collider_desc = nphysics3d::object::ColliderDesc::new(obstacle_shape)
+            .density(1.0);
+
+        for i in 0..count.0 {
+            for k in 0..count.1 {
+                obstacle_desc.set_translation(na::Vector3::new(0.0,4.0, -16.0) + na::Vector3::new(((count.0 as f64)/2.0 - (i as f64) + 0.5),0.0, ((count.0 as f64)/2.0 - (k as f64) + 0.5))*separation);
+                let obstacle = obstacle_desc.build();
+                let obstacle_handle = bodies.insert(obstacle);
+                colliders.insert(collider_desc.build(nphysics3d::object::BodyPartHandle(obstacle_handle, 0)));
+
+                obstacles.push(obstacle_handle);
+            }
+        }
+        return obstacles;
+    }
+
     #[wasm_bindgen(constructor)]
     pub fn new() -> PhysicsWorld {
+        let n_obstacles : (usize, usize) = (8, 4);
         utils::set_panic_hook();
         let mechanical_world =
             nphysics3d::world::MechanicalWorld::new(na::Vector3::new(0.0, -9.81, 0.0));
@@ -241,6 +267,8 @@ impl PhysicsWorld {
 
         let segway = SegwayParts { segway_handle };
 
+        let obstacles = Self::create_dynamic_objects(&mut bodies, &mut colliders, n_obstacles);
+
         PhysicsWorld {
             mechanical_world,
             geometric_world,
@@ -249,6 +277,7 @@ impl PhysicsWorld {
             joint_constraints,
             force_generators,
             segway,
+            obstacles,
         }
     }
 
@@ -274,6 +303,21 @@ impl PhysicsWorld {
             rotation.vector().z,
             rotation.w,
         )
+    }
+
+    pub fn get_obstacle_position(&self, index : usize) -> Vector3 {
+        let obstacle = self.bodies.rigid_body(self.obstacles[index]).unwrap();
+        let translation = obstacle.position().translation.vector;
+        
+        Vector3::new(translation.x, translation.y, translation.z)
+    }
+
+    pub fn get_obstacle_rotation(&self, index : usize) -> Quaternion {
+        let obstacle = self.bodies.rigid_body(self.obstacles[index]).unwrap();
+        let rotation = obstacle.position().rotation;
+        let vector = rotation.vector();
+        
+        Quaternion::new(vector.x, vector.y, vector.z, rotation.w)
     }
 
     pub fn step(&mut self) {
