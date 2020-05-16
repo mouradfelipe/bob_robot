@@ -238,7 +238,7 @@ impl PhysicsWorld {
 
         for i in 0..count.0 {
             for k in 0..count.1 {
-                obstacle_desc.set_translation(na::Vector3::new(0.0,4.0, -16.0) + na::Vector3::new(((count.0 as f64)/2.0 - (i as f64) + 0.5),0.0, ((count.0 as f64)/2.0 - (k as f64) + 0.5))*separation);
+                obstacle_desc.set_translation(na::Vector3::new(0.0,4.0, -16.0) + na::Vector3::new(((count.0 as f64)/2.0 - (i as f64) - 0.5),0.0, ((count.0 as f64)/2.0 - (k as f64) - 0.5))*separation);
                 let obstacle = obstacle_desc.build();
                 let obstacle_handle = bodies.insert(obstacle);
                 colliders.insert(collider_desc.build(nphysics3d::object::BodyPartHandle(obstacle_handle, 0)));
