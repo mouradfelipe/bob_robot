@@ -228,6 +228,22 @@ export class PhysicsWorld {
         return takeObject(ret);
     }
     /**
+    * @param {number} index
+    * @returns {any}
+    */
+    get_obstacle_position(index) {
+        var ret = wasm.physicsworld_get_obstacle_position(this.ptr, index);
+        return takeObject(ret);
+    }
+    /**
+    * @param {number} index
+    * @returns {any}
+    */
+    get_obstacle_rotation(index) {
+        var ret = wasm.physicsworld_get_obstacle_rotation(this.ptr, index);
+        return takeObject(ret);
+    }
+    /**
     */
     step() {
         wasm.physicsworld_step(this.ptr);

@@ -5,6 +5,8 @@ export function __wbg_physicsworld_free(a: number): void;
 export function physicsworld_new(): number;
 export function physicsworld_get_part_position(a: number, b: number): number;
 export function physicsworld_get_part_rotation(a: number, b: number): number;
+export function physicsworld_get_obstacle_position(a: number, b: number): number;
+export function physicsworld_get_obstacle_rotation(a: number, b: number): number;
 export function physicsworld_step(a: number): void;
 export function physicsworld_set_timestep(a: number, b: number): void;
 export function physicsworld_set_max_left_motor_torque(a: number, b: number): void;

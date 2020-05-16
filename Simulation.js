@@ -24,7 +24,9 @@ class Simulation {
     this.scene.add(this.robot.rightWheel);
     this.scene.add(this.robot.weight);
     this.setFloor(x, 0, z, proportion);
-    this.setLight(x, y, z, 500);
+    this.setLight(x, y, z, 75);
+    this.setRamp();
+    this.setObstacles();
     this.camera.position.set(10 * proportion, 5 * proportion, 13 * proportion);
     this.camera.lookAt(this.robot.body.getWorldPosition());
 
@@ -41,30 +43,102 @@ class Simulation {
   setFloor(x, y, z, proportion) {
     let floorGeometry = new THREE.BoxGeometry(
       100 * proportion,
-      proportion,
+      2*proportion,
       100 * proportion,
       10,
       10
     );
-    let floorMaterial = new THREE.MeshPhongMaterial({
+    let floorMaterial = new THREE.MeshPhysicalMaterial({
       color: 0x3d2100,
       emissive: 0x000000,
-      specular: 0xffffff,
-      shininess: 50,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      roughness: 0.8,
+      reflectivity: 0.2,
+      flatShading: true,
+      vertexColors: true,
     });
 
     let floor = new THREE.Mesh(floorGeometry, floorMaterial);
-
+    floor.receiveShadow = true;
+    floor.castShadow = true;
     floor.position.set(x, y - proportion, z);
     this.scene.add(floor);
+  }
+
+  setRamp() {
+    let rampGeometry = new THREE.Geometry();
+    rampGeometry.vertices.push(
+      new THREE.Vector3(-4,0,0), //0
+      new THREE.Vector3(4,0,0),  //1
+      new THREE.Vector3(-4,2,4), //2
+      new THREE.Vector3(4,2,4),  //3
+      new THREE.Vector3(-4,0,4), //4
+      new THREE.Vector3(4,0,4)   //5
+    )
+    rampGeometry.faces.push(
+      new THREE.Face3(0, 1, 2), //front
+      new THREE.Face3(1, 3, 2), //front
+      new THREE.Face3(5, 4, 3), //back
+      new THREE.Face3(2, 3, 4), //back
+      new THREE.Face3(0, 4, 1), //bottom
+      new THREE.Face3(1, 4, 5), //bottom
+      new THREE.Face3(0, 2, 4), //left
+      new THREE.Face3(1, 5, 3)  //right
+    )
+    rampGeometry.computeBoundingSphere();
+
+    let rampMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0xaaaaaa, //scream
+      emissive: 0x000000,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      roughness: 0.8,
+      reflectivity: 0.2,
+      flatShading: true,
+      vertexColors: true,
+    });
+
+    let ramp = new THREE.Mesh(rampGeometry, rampMaterial);
+    ramp.receiveShadow = true;
+    ramp.castShadow = true;
+    ramp.position.set(0, 0, 4);
+    this.scene.add(ramp);
+  }
+
+  setObstacles() {
+    let obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
+    let obstacleMaterial = new THREE.MeshPhysicalMaterial({
+      color: 0x2266aa,
+      emissive: 0x000000,
+      depthTest: true,
+      depthWrite: true,
+      side: THREE.DoubleSide,
+      roughness: 0.8,
+      reflectivity: 0.2,
+      flatShading: true,
+      vertexColors: true,
+    });
+    let obstacles = [];
+    for(let i = 0; i < 4*8; i++) {
+      let obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+      obstacle.matrixAutoUpdate = false;
+      obstacle.receiveShadow = true;
+      obstacle.castShadow = true;
+      this.scene.add(obstacle);
+      obstacles.push(obstacle);
+    }
+    this.obstacles = obstacles;
   }
 
   setLight(x, y, z, adjuster) {
     this.scene.add(new THREE.AmbientLight(0x3d4143));
 
     let light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(300, 1000, 500);
-    light.target.position.set();
+    light.position.set(24, 80, 40);
+    light.target.position.set(0,0,0);
     light.castShadow = true;
 
     light.shadow.camera = new THREE.OrthographicCamera(
@@ -72,12 +146,17 @@ class Simulation {
       adjuster,
       adjuster,
       -adjuster,
-      500,
+      0.1,
       1600
     );
-    light.shadow.bias = 0.0001;
-    light.shadow.mapSize.width = light.shadow.mapSize.height = 1024;
+
+    light.shadow.bias = -0.0002;
+    light.shadow.mapSize.width = light.shadow.mapSize.height = 4096;
     this.scene.add(light);
+    this.scene.add(light.target);
+
+    //const cameraHelper = new THREE.CameraHelper(light.shadow.camera);
+    //this.scene.add(cameraHelper);
   }
 
   update() {
@@ -101,6 +180,11 @@ class Simulation {
     rotation = this.physics.get_part_rotation(wasmlib.Parts.WEIGHT);
     this.robot.weight.matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
 
+    for (let i = 0; i< this.obstacles.length; i++) {
+      position = this.physics.get_obstacle_position(i);
+      rotation = this.physics.get_obstacle_rotation(i);
+      this.obstacles[i].matrix.compose(position, rotation, new THREE.Vector3(1, 1, 1));
+    }
     // let pos = this.physics.get_part_position(wasmlib.Parts.BASE);
     // let rot = this.physics.get_part_rotation(wasmlib.Parts.BASE);
     // let matrix = new THREE.Matrix4().compose(pos, rot, new THREE.Vector3(1, 1, 1));

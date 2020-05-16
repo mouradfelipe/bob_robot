@@ -26,6 +26,16 @@ export class PhysicsWorld {
 */
   get_part_rotation(part: number): any;
 /**
+* @param {number} index 
+* @returns {any} 
+*/
+  get_obstacle_position(index: number): any;
+/**
+* @param {number} index 
+* @returns {any} 
+*/
+  get_obstacle_rotation(index: number): any;
+/**
 */
   step(): void;
 /**
@@ -58,6 +68,8 @@ export interface InitOutput {
   readonly physicsworld_new: () => number;
   readonly physicsworld_get_part_position: (a: number, b: number) => number;
   readonly physicsworld_get_part_rotation: (a: number, b: number) => number;
+  readonly physicsworld_get_obstacle_position: (a: number, b: number) => number;
+  readonly physicsworld_get_obstacle_rotation: (a: number, b: number) => number;
   readonly physicsworld_step: (a: number) => void;
   readonly physicsworld_set_timestep: (a: number, b: number) => void;
   readonly physicsworld_set_max_left_motor_torque: (a: number, b: number) => void;

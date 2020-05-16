@@ -6,6 +6,7 @@ use ncollide3d;
 use ncollide3d::transformation::ToTriMesh;
 use nphysics3d;
 use nphysics3d::object::BodyPart;
+use nphysics3d::object::Body;
 use wasm_bindgen::prelude::*;
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -57,32 +58,70 @@ pub struct PhysicsWorld {
     force_generators: nphysics3d::force_generator::DefaultForceGeneratorSet<f64>,
 
     segway: SegwayParts,
+    obstacles: Vec<nphysics3d::object::DefaultBodyHandle>
 }
 
 #[wasm_bindgen]
 impl PhysicsWorld {
-    #[wasm_bindgen(constructor)]
-    pub fn new() -> PhysicsWorld {
-        utils::set_panic_hook();
-        let mechanical_world =
-            nphysics3d::world::MechanicalWorld::new(na::Vector3::new(0.0, -9.81, 0.0));
-        let geometric_world = nphysics3d::world::GeometricalWorld::new();
-        let mut bodies = nphysics3d::object::DefaultBodySet::new();
-        let mut colliders = nphysics3d::object::DefaultColliderSet::new();
-        let joint_constraints = nphysics3d::joint::DefaultJointConstraintSet::new();
-        let force_generators = nphysics3d::force_generator::DefaultForceGeneratorSet::new();
-
-        let ground_body = nphysics3d::object::RigidBodyDesc::new()
+    fn create_static_objects(bodies : &mut nphysics3d::object::DefaultBodySet<f64>, colliders : &mut nphysics3d::object::DefaultColliderSet<f64>) {
+        //create arena
+        let arena_body = nphysics3d::object::RigidBodyDesc::new()
             .status(nphysics3d::object::BodyStatus::Static)
             .build();
-        let ground = bodies.insert(ground_body);
+        
+        let arena = bodies.insert(arena_body);
         let ground_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Plane::new(
             na::Vector3::y_axis(),
         ));
-        let ground_collider = nphysics3d::object::ColliderDesc::new(ground_shape)
-            .build(nphysics3d::object::BodyPartHandle(ground, 0));
-        colliders.insert(ground_collider);
+        let z_pos_wall_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Plane::new(
+            -na::Vector3::z_axis(),
+        ));
+        let z_neg_wall_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Plane::new(
+            na::Vector3::z_axis(),
+        ));
+        let x_pos_wall_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Plane::new(
+            -na::Vector3::x_axis(),
+        ));
+        let x_neg_wall_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Plane::new(
+            na::Vector3::x_axis(),
+        ));
 
+        let arena_collider = nphysics3d::object::ColliderDesc::new(
+            ncollide3d::shape::ShapeHandle::new(
+                ncollide3d::shape::Compound::new(vec![
+                    (na::Isometry3::new(na::zero(), na::zero()), ground_shape),
+                    (na::Isometry3::new(na::Vector3::z()*50.0, na::zero()), z_pos_wall_shape),
+                    (na::Isometry3::new(na::Vector3::z()*-50.0, na::zero()), z_neg_wall_shape),
+                    (na::Isometry3::new(na::Vector3::x()*50.0, na::zero()), x_pos_wall_shape),
+                    (na::Isometry3::new(na::Vector3::x()*-50.0, na::zero()), x_neg_wall_shape),
+                ])
+            )
+        )
+        .build(nphysics3d::object::BodyPartHandle(arena, 0));
+        colliders.insert(arena_collider);
+
+        //create ramp
+        let ramp = nphysics3d::object::RigidBodyDesc::new()
+            .status(nphysics3d::object::BodyStatus::Static)
+            .translation(na::Vector3::z()*4.0)
+            .build();
+        let ramp_handle = bodies.insert(ramp);
+        let ramp_shape = ncollide3d::shape::ShapeHandle::new(
+            ncollide3d::shape::ConvexHull::try_from_points(&[
+                na::Point3::new(-4.0, 0.0, 0.0),
+                na::Point3::new(4.0, 0.0, 0.0),
+                na::Point3::new(-4.0, 2.0, 4.0),
+                na::Point3::new(4.0, 2.0, 4.0),
+                na::Point3::new(-4.0, 0.0, 4.0),
+                na::Point3::new(4.0, 0.0, 4.0),
+            ]).unwrap()
+        );
+        let ramp_collider = nphysics3d::object::ColliderDesc::new(ramp_shape)
+            .build(nphysics3d::object::BodyPartHandle(ramp_handle, 0));
+        colliders.insert(ramp_collider);
+    } 
+
+    fn create_robot(bodies : &mut nphysics3d::object::DefaultBodySet<f64>, colliders : &mut nphysics3d::object::DefaultColliderSet<f64>) -> nphysics3d::object::DefaultBodyHandle {
         let free_joint = nphysics3d::joint::FreeJoint::new(na::Isometry3::new(
             na::Vector3::y() * 4.0,
             na::zero(),
@@ -100,7 +139,7 @@ impl PhysicsWorld {
         left_wheel_desc.set_name("LeftWheel".to_owned());
         left_wheel_desc.set_body_shift(na::Vector3::x() * (-0.6));
         left_wheel_desc.set_parent_shift(na::Vector3::y() * -0.6);
-
+        
         let mut right_axis = nphysics3d::joint::RevoluteJoint::new(na::Vector3::x_axis(), 0.0);
         right_axis.enable_angular_motor();
         right_axis.disable_max_angle();
@@ -124,6 +163,8 @@ impl PhysicsWorld {
         let right_wheel =
             nphysics3d::object::BodyPartHandle(segway_handle, Parts::RIGHT_WHEEL as usize);
         let weight = nphysics3d::object::BodyPartHandle(segway_handle, Parts::WEIGHT as usize);
+
+        bodies.multibody_mut(segway_handle).unwrap().set_deactivation_threshold(None);
 
         let body_base_shape = ncollide3d::shape::ShapeHandle::new(
             ncollide3d::shape::ConvexHull::try_from_points(
@@ -180,8 +221,53 @@ impl PhysicsWorld {
             .density(4e4)
             .build(weight);
         colliders.insert(weight_collider);
+        
+        return segway_handle;
+    }
+
+    fn create_dynamic_objects(bodies : &mut nphysics3d::object::DefaultBodySet<f64>, colliders : &mut nphysics3d::object::DefaultColliderSet<f64>, count: (usize, usize)) -> Vec<nphysics3d::object::DefaultBodyHandle> {
+        let separation = 2.0;
+        let mut obstacles : Vec<nphysics3d::object::DefaultBodyHandle> = Vec::new();
+        obstacles.reserve(count.0*count.1);
+        
+        let mut obstacle_desc = nphysics3d::object::RigidBodyDesc::new()
+            .status(nphysics3d::object::BodyStatus::Dynamic);
+        let obstacle_shape = ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Cuboid::new(na::Vector3::new(1.0, 1.0, 1.0)/2.0));
+        let collider_desc = nphysics3d::object::ColliderDesc::new(obstacle_shape)
+            .density(1.0);
+
+        for i in 0..count.0 {
+            for k in 0..count.1 {
+                obstacle_desc.set_translation(na::Vector3::new(0.0,4.0, -16.0) + na::Vector3::new(((count.0 as f64)/2.0 - (i as f64) - 0.5),0.0, ((count.0 as f64)/2.0 - (k as f64) - 0.5))*separation);
+                let obstacle = obstacle_desc.build();
+                let obstacle_handle = bodies.insert(obstacle);
+                colliders.insert(collider_desc.build(nphysics3d::object::BodyPartHandle(obstacle_handle, 0)));
+
+                obstacles.push(obstacle_handle);
+            }
+        }
+        return obstacles;
+    }
+
+    #[wasm_bindgen(constructor)]
+    pub fn new() -> PhysicsWorld {
+        let n_obstacles : (usize, usize) = (8, 4);
+        utils::set_panic_hook();
+        let mechanical_world =
+            nphysics3d::world::MechanicalWorld::new(na::Vector3::new(0.0, -9.81, 0.0));
+        let geometric_world = nphysics3d::world::GeometricalWorld::new();
+        let mut bodies = nphysics3d::object::DefaultBodySet::new();
+        let mut colliders = nphysics3d::object::DefaultColliderSet::new();
+        let joint_constraints = nphysics3d::joint::DefaultJointConstraintSet::new();
+        let force_generators = nphysics3d::force_generator::DefaultForceGeneratorSet::new();
+
+        Self::create_static_objects(&mut bodies, &mut colliders);
+
+        let segway_handle = Self::create_robot(&mut bodies, &mut colliders);
 
         let segway = SegwayParts { segway_handle };
+
+        let obstacles = Self::create_dynamic_objects(&mut bodies, &mut colliders, n_obstacles);
 
         PhysicsWorld {
             mechanical_world,
@@ -191,6 +277,7 @@ impl PhysicsWorld {
             joint_constraints,
             force_generators,
             segway,
+            obstacles,
         }
     }
 
@@ -216,6 +303,21 @@ impl PhysicsWorld {
             rotation.vector().z,
             rotation.w,
         )
+    }
+
+    pub fn get_obstacle_position(&self, index : usize) -> Vector3 {
+        let obstacle = self.bodies.rigid_body(self.obstacles[index]).unwrap();
+        let translation = obstacle.position().translation.vector;
+        
+        Vector3::new(translation.x, translation.y, translation.z)
+    }
+
+    pub fn get_obstacle_rotation(&self, index : usize) -> Quaternion {
+        let obstacle = self.bodies.rigid_body(self.obstacles[index]).unwrap();
+        let rotation = obstacle.position().rotation;
+        let vector = rotation.vector();
+        
+        Quaternion::new(vector.x, vector.y, vector.z, rotation.w)
     }
 
     pub fn step(&mut self) {
