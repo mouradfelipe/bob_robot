@@ -156,8 +156,8 @@ class Robot {
     let headDecoration2 = new THREE.Mesh(geometry, material);
     headDecoration2.position.z = 0.5;
     headDecoration2.position.x = -0.2;
-    headDecoration1.receiveShadow = true;
     headDecoration2.receiveShadow = true;
+    headDecoration2.castShadow = true;
     head.add(headDecoration2);
   }
 
