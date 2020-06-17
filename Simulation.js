@@ -1,5 +1,7 @@
 import Robot from "./Robot.js";
 import * as wasmlib from "./physics-wasm/pkg/physics_wasm.js";
+import { Water } from "https://threejs.org/examples/jsm/objects/Water.js"
+import { GUI } from "https://threejs.org/examples/jsm/libs/dat.gui.module.js";
 
 class Simulation {
   constructor() {
@@ -24,9 +26,11 @@ class Simulation {
     this.scene.add(this.robot.rightWheel);
     this.scene.add(this.robot.weight);
     this.setArena(x, 0, z, proportion);
-    this.setLight(x, y, z, 75);
+    this.light = this.setLight(x, y, z, 75);
     this.setRamp();
     this.setObstacles();
+    this.water = this.setWater();
+    this.setGUI();
     this.camera.position.set(10 * proportion, 5 * proportion, 13 * proportion);
     this.camera.lookAt(this.robot.body.getWorldPosition());
 
@@ -39,6 +43,44 @@ class Simulation {
     this.physics.set_max_right_motor_torque(50);
     this.physics.set_timestep(1 / 120);
   }
+
+  setGUI(){
+    let gui = new GUI();
+
+    let uniforms = this.water.material.uniforms;
+				var folder = gui.addFolder( 'Water' );
+				folder.add( uniforms.distortionScale, 'value', 0, 8, 0.1 ).name( 'distortionScale' );
+				folder.add( uniforms.size, 'value', 0.1, 10, 0.1 ).name( 'size' );
+				folder.open();
+  }
+
+  setWater(){
+    let waterGeometry = new THREE.PlaneBufferGeometry(10000,10000);
+    let water = new Water(
+      waterGeometry,
+      {
+        textureWidth: 512,
+        textureHeight: 512,
+        waterNormals: new THREE.TextureLoader().load( "https://threejs.org/examples/textures/waternormals.jpg", function ( texture ) {
+
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+        } ),
+        alpha: 1.0,
+        sunDirection: this.light.position.clone().normalize(),
+        sunColor: 0xffffff,
+        //waterColor: 0x001e0f,
+        waterColor: 0x004d99,
+        distortionScale: 3.7,
+        fog: this.scene.fog !== undefined
+      }
+    );
+    water.rotation.x = - Math.PI / 2;
+    water.position.y = water.position.y - 4;
+    this.scene.add( water );
+    return water;
+  }
+
 
   setArena(x, y, z, proportion) {
     let floorGeometry = new THREE.BoxGeometry(
@@ -94,22 +136,22 @@ class Simulation {
     wall1.receiveShadow = true;
     wall1.castShadow = true;
     wall1.position.set(x + 50 * proportion + proportion, y + 10 * proportion, z);
-    this.scene.add(wall1);
+    //this.scene.add(wall1);
     let wall2 = new THREE.Mesh(wall2Geometry, wallMaterial);
     wall2.receiveShadow = true;
     wall2.castShadow = true;
     wall2.position.set(x, y + 10 * proportion, z + 50 * proportion + proportion);
-    this.scene.add(wall2);
+    //this.scene.add(wall2);
     let wall3 = new THREE.Mesh(wall1Geometry, wallMaterial);
     wall3.receiveShadow = true;
     wall3.castShadow = true;
     wall3.position.set(x - 50 * proportion - proportion, y + 10 * proportion, z);
-    this.scene.add(wall3);
+    //this.scene.add(wall3);
     let wall4 = new THREE.Mesh(wall2Geometry, wallMaterial);
     wall4.receiveShadow = true;
     wall4.castShadow = true;
     wall4.position.set(x, y + 10 * proportion, z - 50 * proportion - proportion);
-    this.scene.add(wall4);
+    //this.scene.add(wall4);
   }
 
   setRamp() {
@@ -199,12 +241,14 @@ class Simulation {
     light.shadow.mapSize.width = light.shadow.mapSize.height = 4096;
     this.scene.add(light);
     this.scene.add(light.target);
-
+    return light;
     //const cameraHelper = new THREE.CameraHelper(light.shadow.camera);
     //this.scene.add(cameraHelper);
   }
 
   update() {
+    this.water.material.uniforms[ 'time' ].value += 1.0 / 60.0;
+
     this.physics.step();
     this.physics.step();
     let position = this.physics.get_part_position(wasmlib.Parts.BASE);
