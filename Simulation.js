@@ -81,7 +81,6 @@ class Simulation {
     return water;
   }
 
-
   setArena(x, y, z, proportion) {
     let floorGeometry = new THREE.BoxGeometry(
       100 * proportion,
@@ -90,17 +89,12 @@ class Simulation {
       10,
       10
     );
-    let floorMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x3d2100,
-      emissive: 0x000000,
-      depthTest: true,
-      depthWrite: true,
-      side: THREE.DoubleSide,
-      roughness: 0.8,
-      reflectivity: 0.2,
-      flatShading: true,
-      vertexColors: true,
-    });
+    let floorTexture = new THREE.TextureLoader().load("./resources/floor.jpeg", function ( texture ) {
+
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(25,25);
+    } );
+    let floorMaterial = new THREE.MeshPhysicalMaterial({map: floorTexture});
     let wall1Geometry = new THREE.BoxGeometry(
       2 * proportion,
       20 * proportion,
@@ -175,8 +169,9 @@ class Simulation {
       new THREE.Face3(1, 5, 3)  //right
     )
     rampGeometry.computeBoundingSphere();
-
+    
     let rampMaterial = new THREE.MeshPhysicalMaterial({
+      //map: rampTexture,
       color: 0xaaaaaa, //scream
       emissive: 0x000000,
       depthTest: true,
@@ -185,7 +180,7 @@ class Simulation {
       roughness: 0.8,
       reflectivity: 0.2,
       flatShading: true,
-      vertexColors: true,
+      //vertexColors: true,
     });
 
     let ramp = new THREE.Mesh(rampGeometry, rampMaterial);
@@ -197,9 +192,16 @@ class Simulation {
 
   setObstacles() {
     let obstacleGeometry = new THREE.BoxGeometry(1, 1, 1);
+    let boxTexture = new THREE.TextureLoader().load("./resources/box2.jpeg", function ( texture ) {
+
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      //texture.repeat.set(25,25);
+      //texture.offset.set(0.5,0.5);
+    } );
     let obstacleMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x2266aa,
-      emissive: 0x000000,
+      map: boxTexture,
+      //color: 0x2266aa,
+      //emissive: 0x000000,
       depthTest: true,
       depthWrite: true,
       side: THREE.DoubleSide,
