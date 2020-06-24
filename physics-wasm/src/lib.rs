@@ -128,7 +128,12 @@ impl PhysicsWorld {
             .translation(na::Vector3::new(-10.0, 0.0, 0.0))
             .build());
 
+        let mut tree_material = nphysics3d::material::BasicMaterial::new(0.0, 0.0);
+        tree_material.friction_combine_mode = nphysics3d::material::MaterialCombineMode::Multiply;
+        let tree_material_handle1 = nphysics3d::material::MaterialHandle::new(tree_material);
+
         let tree_collider1 = nphysics3d::object::ColliderDesc::new(tree_shape1)
+            .material(tree_material_handle1)
             .build(nphysics3d::object::BodyPartHandle(tree_body1, 0));
 
         colliders.insert(tree_collider1);
@@ -147,7 +152,10 @@ impl PhysicsWorld {
             .translation(na::Vector3::new(0.0, 0.0, 15.0))
             .build());
 
+        let tree_material_handle2 = nphysics3d::material::MaterialHandle::new(tree_material);
+
         let tree_collider2 = nphysics3d::object::ColliderDesc::new(tree_shape2)
+            .material(tree_material_handle2)
             .build(nphysics3d::object::BodyPartHandle(tree_body2, 0));
 
         colliders.insert(tree_collider2);
@@ -184,7 +192,10 @@ impl PhysicsWorld {
             .translation(na::Vector3::new(10.0, 0.0, 5.0))
             .build());
 
+        let tree_material_handle3 = nphysics3d::material::MaterialHandle::new(tree_material);
+
         let tree_collider3 = nphysics3d::object::ColliderDesc::new(tree_shape3)
+            .material(tree_material_handle3)
             .build(nphysics3d::object::BodyPartHandle(tree_body3, 0));
 
         colliders.insert(tree_collider3);
