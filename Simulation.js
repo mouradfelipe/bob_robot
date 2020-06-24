@@ -39,7 +39,7 @@ class Simulation {
     this.light = this.setLight(x, y, z, 75);
     this.setRamp();
     this.setObstacles();
-    this.setBlender();
+    this.setBlenderObjects();
     this.water = this.setWater();
     this.setGUI();
     this.camera.position.set(10 * proportion, 5 * proportion, 13 * proportion);
@@ -253,56 +253,46 @@ class Simulation {
     this.obstacles = obstacles;
   }
 
-  setBlender() {
-    let loader = new THREE.GLTFLoader();
-
-    let loader2 = new THREE.GLTFLoader();
-
-    let loader3 = new THREE.GLTFLoader();
-
-    loader.load("resources/mytree.glb", (gltf) => handle_load2(gltf));
-    let mesh = new THREE.Object3D();
-    let mesh2 = new THREE.Object3D();
+  setBlenderObjects() {
     let scene = this.scene;
 
-    loader2.load("resources/lefttree.glb", (gltf) => handle_load(gltf));
+    let loader1 = new THREE.GLTFLoader();
+    let mesh1 = new THREE.Object3D();
+    let position1 = [0, 0, 15];
+    let scale1 = [0.5, 0.5, 0.5];
 
+    let loader2 = new THREE.GLTFLoader();
+    let mesh2 = new THREE.Object3D();
+    let position2 = [10, 0, 5];
+    let scale2 = [1, 1, 1];
+
+    let loader3 = new THREE.GLTFLoader();
     let mesh3 = new THREE.Object3D();
-    loader3.load("resources/middletree.glb", (gltf) => handle_load3(gltf));
+    let position3 = [-10, 0, 0];
+    let scale3 = [0.5, 0.5, 0.5];
 
-    function handle_load3(gltf) {
-      console.log(gltf.scene.children);
-      mesh3 = gltf.scene.children[0];
-      mesh3.receiveShadow = true;
-      mesh3.castShadow = true;
-      mesh3.flatShading = true;
-      mesh3.position.set(-10, 0, 0);
-      mesh3.scale.set(0.5, 0.5, 0.5);
-      scene.add(mesh3);
-      console.log(mesh3);
-    }
+    loader1.load("resources/lefttree.glb", (gltf) =>
+      handle_load(gltf, mesh1, position1, scale1)
+    );
 
-    function handle_load2(gltf) {
+    loader2.load("resources/mytree.glb", (gltf) =>
+      handle_load(gltf, mesh2, position2, scale2)
+    );
+
+    loader3.load("resources/middletree.glb", (gltf) =>
+      handle_load(gltf, mesh3, position3, scale3)
+    );
+
+    function handle_load(gltf, mesh, position, scale) {
       console.log(gltf.scene.children);
       mesh = gltf.scene.children[0];
       mesh.receiveShadow = true;
       mesh.castShadow = true;
       mesh.flatShading = true;
-      mesh.position.set(10, 0, 5);
+      mesh.position.set(position[0], position[1], position[2]);
+      mesh.scale.set(scale[0], scale[1], scale[2]);
       scene.add(mesh);
       console.log(mesh);
-    }
-
-    function handle_load(gltf) {
-      console.log(gltf.scene.children);
-      mesh2 = gltf.scene.children[0].children[0];
-      mesh2.receiveShadow = true;
-      mesh2.castShadow = true;
-      //mesh2.flatShading = true;
-      mesh2.position.set(0, 0, 15);
-      mesh2.scale.set(0.5, 0.5, 0.5);
-      scene.add(mesh2);
-      console.log(mesh2);
     }
   }
 
