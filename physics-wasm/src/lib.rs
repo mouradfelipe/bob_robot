@@ -114,6 +114,81 @@ impl PhysicsWorld {
         .build(nphysics3d::object::BodyPartHandle(arena, 0));
         colliders.insert(arena_collider);
 
+        let tree_shape1 = ncollide3d::shape::ShapeHandle::new(
+            ncollide3d::shape::ConvexHull::try_from_points(
+                &ncollide3d::shape::Cylinder::new(3.0, 0.1)
+                    .to_trimesh(128)
+                    .coords,
+            )
+            .unwrap(),
+        );
+
+        let tree_body1 = bodies.insert(nphysics3d::object::RigidBodyDesc::new()
+            .status(nphysics3d::object::BodyStatus::Static)
+            .translation(na::Vector3::new(-10.0, 0.0, 0.0))
+            .build());
+
+        let tree_collider1 = nphysics3d::object::ColliderDesc::new(tree_shape1)
+            .build(nphysics3d::object::BodyPartHandle(tree_body1, 0));
+
+        colliders.insert(tree_collider1);
+
+        let tree_shape2 = ncollide3d::shape::ShapeHandle::new(
+            ncollide3d::shape::ConvexHull::try_from_points(
+                &ncollide3d::shape::Cylinder::new(3.0, 0.1)
+                    .to_trimesh(128)
+                    .coords,
+            )
+            .unwrap(),
+        );
+
+        let tree_body2 = bodies.insert(nphysics3d::object::RigidBodyDesc::new()
+            .status(nphysics3d::object::BodyStatus::Static)
+            .translation(na::Vector3::new(0.0, 0.0, 15.0))
+            .build());
+
+        let tree_collider2 = nphysics3d::object::ColliderDesc::new(tree_shape2)
+            .build(nphysics3d::object::BodyPartHandle(tree_body2, 0));
+
+        colliders.insert(tree_collider2);
+
+        let tree3_top_shape = ncollide3d::shape::ShapeHandle::new(
+            ncollide3d::shape::ConvexHull::try_from_points(
+                &ncollide3d::shape::Cone::new(0.5, 0.3).to_trimesh(16).coords,
+            )
+            .unwrap(),
+        );
+
+        let tree3_bottom_shape = ncollide3d::shape::ShapeHandle::new(
+            ncollide3d::shape::ConvexHull::try_from_points(
+                &ncollide3d::shape::Cylinder::new(1.0, 0.25)
+                    .to_trimesh(128)
+                    .coords,
+            )
+            .unwrap(),
+        );
+
+        let tree_axis3 = na::Unit::new_normalize(na::Vector3::x());
+        let rot = na::UnitQuaternion::from_axis_angle(&tree_axis3, 3.141592653589793238);
+
+        let tree_shape3 =
+            ncollide3d::shape::ShapeHandle::new(ncollide3d::shape::Compound::new(vec![
+                (na::Isometry3::new(na::zero(), na::zero()), tree3_bottom_shape),
+                (
+                    na::Isometry3::from_parts(na::Translation3::new(0.0, 1.0, 0.0), rot),
+                    tree3_top_shape,
+                ),
+            ]));
+        let tree_body3 = bodies.insert(nphysics3d::object::RigidBodyDesc::new()
+            .status(nphysics3d::object::BodyStatus::Static)
+            .translation(na::Vector3::new(10.0, 0.0, 5.0))
+            .build());
+
+        let tree_collider3 = nphysics3d::object::ColliderDesc::new(tree_shape3)
+            .build(nphysics3d::object::BodyPartHandle(tree_body3, 0));
+
+        colliders.insert(tree_collider3);
+
         //create ramp
         let ramp = nphysics3d::object::RigidBodyDesc::new()
             .status(nphysics3d::object::BodyStatus::Static)
