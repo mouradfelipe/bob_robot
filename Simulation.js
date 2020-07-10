@@ -2,6 +2,8 @@ import Robot from "./Robot.js";
 import * as wasmlib from "./physics-wasm/pkg/physics_wasm.js";
 import { Water } from "https://threejs.org/examples/jsm/objects/Water.js";
 import { GUI } from "https://threejs.org/examples/jsm/libs/dat.gui.module.js";
+import { DragControls } from "https://cdn.jsdelivr.net/npm/three@0.114/examples/jsm/controls/DragControls.js";
+
 
 class Simulation {
   constructor() {
@@ -21,7 +23,7 @@ class Simulation {
     });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
-    this.controls = new THREE.OrbitControls(
+    this.orbitControl = new THREE.OrbitControls(
       this.camera,
       this.renderer.domElement
     );
@@ -251,6 +253,16 @@ class Simulation {
       obstacles.push(obstacle);
     }
     this.obstacles = obstacles;
+    this.renderer.domElement.ondragstart = function (event) { event.preventDefault(); return false; };
+    this.dragControl = new DragControls([...obstacles],this.camera,this.renderer.domElement);
+    this.dragControl.addEventListener('dragstart',(event)=>{
+      event.object.matrixAutoUpdate = true
+      this.orbitControl.enabled = false;
+    });
+    this.dragControl.addEventListener('dragend',(event)=>{
+      event.object.matrixAutoUpdate = true
+      this.orbitControl.enabled = true;
+    });
   }
 
   setBlenderObjects() {
