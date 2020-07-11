@@ -256,11 +256,12 @@ class Simulation {
     this.renderer.domElement.ondragstart = function (event) { event.preventDefault(); return false; };
     this.dragControl = new DragControls([...obstacles],this.camera,this.renderer.domElement);
     this.dragControl.addEventListener('dragstart',(event)=>{
-      event.object.matrixAutoUpdate = true
+      event.object.matrixAutoUpdate = true;
       this.orbitControl.enabled = false;
     });
     this.dragControl.addEventListener('dragend',(event)=>{
-      event.object.matrixAutoUpdate = true
+      console.log(event.object.obstacle.position);
+      event.object.matrixAutoUpdate = false;
       this.orbitControl.enabled = true;
     });
   }
