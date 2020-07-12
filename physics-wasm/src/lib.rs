@@ -37,6 +37,15 @@ extern "C" {
     #[wasm_bindgen(constructor)]
     fn new(x: f64, y: f64, z: f64) -> Vector3;
 
+    #[wasm_bindgen(method, getter)]
+    fn x(this: &Vector3) -> f64;
+
+    #[wasm_bindgen(method, getter)]
+    fn y(this: &Vector3) -> f64;
+
+    #[wasm_bindgen(method, getter)]
+    fn z(this: &Vector3) -> f64;
+
     #[wasm_bindgen(js_namespace = THREE)]
     pub type Quaternion;
 
@@ -426,6 +435,21 @@ impl PhysicsWorld {
             rotation.vector().z,
             rotation.w,
         )
+    }    
+
+    pub fn begin_mouse_handle(&mut self, index: usize) {
+        let obstacle = self.bodies.get_mut(self.obstacles[index]).unwrap();
+        obstacle.set_status(nphysics3d::object::BodyStatus::Disabled);
+    }
+
+    pub fn end_mouse_handle(&mut self, index: usize) {
+        let obstacle = self.bodies.get_mut(self.obstacles[index]).unwrap();
+        obstacle.set_status(nphysics3d::object::BodyStatus::Dynamic);
+    }
+
+    pub fn set_obstacle_position(&mut self, index: usize, position: Vector3) {
+        let obstacle = self.bodies.rigid_body_mut(self.obstacles[index]).unwrap();
+        obstacle.set_position(na::Isometry3::from_parts(na::Vector3::new(position.x(), position.y(), position.z()).into(), obstacle.position().rotation));
     }
 
     pub fn get_obstacle_position(&self, index: usize) -> Vector3 {

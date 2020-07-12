@@ -27,6 +27,19 @@ export class PhysicsWorld {
   get_part_rotation(part: number): any;
 /**
 * @param {number} index 
+*/
+  begin_mouse_handle(index: number): void;
+/**
+* @param {number} index 
+*/
+  end_mouse_handle(index: number): void;
+/**
+* @param {number} index 
+* @param {any} position 
+*/
+  set_obstacle_position(index: number, position: any): void;
+/**
+* @param {number} index 
 * @returns {any} 
 */
   get_obstacle_position(index: number): any;
@@ -68,6 +81,9 @@ export interface InitOutput {
   readonly physicsworld_new: () => number;
   readonly physicsworld_get_part_position: (a: number, b: number) => number;
   readonly physicsworld_get_part_rotation: (a: number, b: number) => number;
+  readonly physicsworld_begin_mouse_handle: (a: number, b: number) => void;
+  readonly physicsworld_end_mouse_handle: (a: number, b: number) => void;
+  readonly physicsworld_set_obstacle_position: (a: number, b: number, c: number) => void;
   readonly physicsworld_get_obstacle_position: (a: number, b: number) => number;
   readonly physicsworld_get_obstacle_rotation: (a: number, b: number) => number;
   readonly physicsworld_step: (a: number) => void;

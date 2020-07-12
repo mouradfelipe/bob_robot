@@ -229,6 +229,25 @@ export class PhysicsWorld {
     }
     /**
     * @param {number} index
+    */
+    begin_mouse_handle(index) {
+        wasm.physicsworld_begin_mouse_handle(this.ptr, index);
+    }
+    /**
+    * @param {number} index
+    */
+    end_mouse_handle(index) {
+        wasm.physicsworld_end_mouse_handle(this.ptr, index);
+    }
+    /**
+    * @param {number} index
+    * @param {any} position
+    */
+    set_obstacle_position(index, position) {
+        wasm.physicsworld_set_obstacle_position(this.ptr, index, addHeapObject(position));
+    }
+    /**
+    * @param {number} index
     * @returns {any}
     */
     get_obstacle_position(index) {
@@ -327,6 +346,21 @@ async function init(input) {
         var ret = new Quaternion(arg0, arg1, arg2, arg3);
         return addHeapObject(ret);
     };
+    imports.wbg.__wbg_x_1ede15b1b1a9015c = function(arg0) {
+        var ret = getObject(arg0).x;
+        return ret;
+    };
+    imports.wbg.__wbg_y_47d2ff17f73d8644 = function(arg0) {
+        var ret = getObject(arg0).y;
+        return ret;
+    };
+    imports.wbg.__wbg_z_18236205c83cd91e = function(arg0) {
+        var ret = getObject(arg0).z;
+        return ret;
+    };
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
+    };
     imports.wbg.__wbg_new_59cb74e423758ede = function() {
         var ret = new Error();
         return addHeapObject(ret);
@@ -344,9 +378,6 @@ async function init(input) {
         } finally {
             wasm.__wbindgen_free(arg0, arg1);
         }
-    };
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
     };
     imports.wbg.__wbindgen_string_new = function(arg0, arg1) {
         var ret = getStringFromWasm0(arg0, arg1);

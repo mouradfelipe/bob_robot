@@ -245,7 +245,7 @@ class Simulation {
     });
     let obstacles = [];
     for (let i = 0; i < 4 * 8; i++) {
-      let obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
+      let obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial.clone());
       obstacle.matrixAutoUpdate = false;
       obstacle.receiveShadow = true;
       obstacle.castShadow = true;
@@ -254,15 +254,25 @@ class Simulation {
     }
     this.obstacles = obstacles;
     this.renderer.domElement.ondragstart = function (event) { event.preventDefault(); return false; };
-    this.dragControl = new DragControls([...obstacles],this.camera,this.renderer.domElement);
-    this.dragControl.addEventListener('dragstart',(event)=>{
-      event.object.matrixAutoUpdate = true;
+    this.dragControl = new DragControls([...obstacles], this.camera, this.renderer.domElement);
+
+    this.dragControl.addEventListener('dragstart', (event) => {
+      const boxIndex = this.obstacles.findIndex(element => element === event.object);
+      this.obstacles[boxIndex].material.color = new THREE.Color(0xff0000);
       this.orbitControl.enabled = false;
+      this.physics.begin_mouse_handle(boxIndex);
     });
-    this.dragControl.addEventListener('dragend',(event)=>{
-      console.log(event.object.obstacle.position);
-      event.object.matrixAutoUpdate = false;
+
+    this.dragControl.addEventListener('drag', (event) => {
+      const boxIndex = this.obstacles.findIndex(element => element === event.object);
+      this.physics.set_obstacle_position(boxIndex, this.obstacles[boxIndex].position)
+    })
+
+    this.dragControl.addEventListener('dragend', (event) => {
+      const boxIndex = this.obstacles.findIndex(element => element === event.object);
+      this.obstacles[boxIndex].material.color = new THREE.Color(0xffffff);
       this.orbitControl.enabled = true;
+      this.physics.end_mouse_handle(boxIndex);
     });
   }
 
