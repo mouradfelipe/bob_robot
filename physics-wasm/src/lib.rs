@@ -264,7 +264,7 @@ impl PhysicsWorld {
         right_wheel_desc.set_parent_shift(na::Vector3::y() * -0.6);
 
         let weight_joint = nphysics3d::joint::FixedJoint::new(na::Isometry3::new(
-            na::Vector3::y() * 0.8,
+            na::Vector3::y() * 1.0,
             na::zero(),
         ));
         let weight_desc = segway_desc.add_child(weight_joint);
