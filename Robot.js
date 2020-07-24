@@ -15,7 +15,12 @@ class Robot {
   generateLeftWheel(proportion = 1) {
     this.leftWheel = new THREE.Object3D();
     this.leftWheel.matrixAutoUpdate = false;
-    let geometry = new THREE.CylinderGeometry(proportion * 0.5, proportion * 0.5, proportion * 0.2, 64);
+    let geometry = new THREE.CylinderGeometry(
+      proportion * 0.5,
+      proportion * 0.5,
+      proportion * 0.2,
+      64
+    );
     let material = new THREE.MeshPhysicalMaterial({
       color: 0xc40707,
       depthTest: true,
@@ -33,7 +38,11 @@ class Robot {
     leftWheelMesh.castShadow = true;
     this.leftWheel.add(leftWheelMesh);
 
-    geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
+    geometry = new THREE.BoxGeometry(
+      proportion * 0.05,
+      proportion * 0.1,
+      proportion * 0.1
+    );
     material = new THREE.MeshPhysicalMaterial({
       color: 0xffbda1,
       depthTest: true,
@@ -50,13 +59,17 @@ class Robot {
     leftWheelDecoration.castShadow = true;
     leftWheelDecoration.position.x += 0.1;
     this.leftWheel.add(leftWheelDecoration);
-
   }
 
   generateRightWheel(proportion = 1) {
     this.rightWheel = new THREE.Object3D();
     this.rightWheel.matrixAutoUpdate = false;
-    let geometry = new THREE.CylinderGeometry(proportion * 0.5, proportion * 0.5, proportion * 0.2, 64);
+    let geometry = new THREE.CylinderGeometry(
+      proportion * 0.5,
+      proportion * 0.5,
+      proportion * 0.2,
+      64
+    );
     let material = new THREE.MeshPhysicalMaterial({
       color: 0xc40707,
       depthTest: true,
@@ -74,7 +87,11 @@ class Robot {
     rightWheelMesh.castShadow = true;
     this.rightWheel.add(rightWheelMesh);
 
-    geometry = new THREE.BoxGeometry(proportion * 0.05, proportion * 0.1, proportion * 0.1);
+    geometry = new THREE.BoxGeometry(
+      proportion * 0.05,
+      proportion * 0.1,
+      proportion * 0.1
+    );
     material = new THREE.MeshPhysicalMaterial({
       color: 0xffbda1,
       depthTest: true,
@@ -94,7 +111,11 @@ class Robot {
   }
 
   generateBodyHead(proportion = 1) {
-    let geometry = new THREE.ConeGeometry(0.4 * proportion, 1.2 * proportion, 16);
+    let geometry = new THREE.ConeGeometry(
+      0.4 * proportion,
+      1.2 * proportion,
+      16
+    );
 
     let material = new THREE.MeshPhysicalMaterial({
       color: 0xffbda1,
@@ -132,7 +153,13 @@ class Robot {
     head.castShadow = true;
     this.body.add(head);
 
-    geometry = new THREE.BoxGeometry(0.2 * proportion, 0.2 * proportion, 0.2 * proportion, 16, 8);
+    geometry = new THREE.BoxGeometry(
+      0.2 * proportion,
+      0.2 * proportion,
+      0.2 * proportion,
+      16,
+      8
+    );
 
     material = new THREE.MeshPhysicalMaterial({
       color: 0xffbda1,
@@ -162,7 +189,7 @@ class Robot {
   }
 
   generateWeight(proportion = 1) {
-    let geometry = new THREE.SphereGeometry(proportion * 0.05, 16, 8);
+    let geometry = new THREE.SphereGeometry(proportion * 0.001, 16, 8);
     let material = new THREE.MeshPhysicalMaterial({
       color: 0xc40707,
       depthTest: true,
@@ -182,20 +209,37 @@ class Robot {
 
   accelerate(a) {
     this.speed += a;
-    if (this.speed > this.MAX_SPEED)
-      this.speed = this.MAX_SPEED
-    if (this.speed < -this.MAX_SPEED)
-      this.speed = -this.MAX_SPEED
+    if (this.speed > this.MAX_SPEED) this.speed = this.MAX_SPEED;
+    if (this.speed < -this.MAX_SPEED) this.speed = -this.MAX_SPEED;
+    if (a > 0) {
+      if (-this.MAX_SPEED < this.speed < this.MAX_SPEED / 3)
+        this.speed += 2 * a;
+    }
+    if (a < 0) {
+      if (-this.MAX_SPEED / 3 < this.speed < this.MAX_SPEED)
+        this.speed += 2 * a;
+    }
   }
 
   angularAccelerate(a) {
     this.angularSpeed += a;
     if (this.angularSpeed > this.MAX_ANGULAR_SPEED)
-      this.angularSpeed = this.MAX_ANGULAR_SPEED
+      this.angularSpeed = this.MAX_ANGULAR_SPEED;
     if (this.angularSpeed < -this.MAX_ANGULAR_SPEED)
-      this.angularSpeed = -this.MAX_ANGULAR_SPEED
+      this.angularSpeed = -this.MAX_ANGULAR_SPEED;
+    if (a > 0) {
+      if (
+        -this.MAX_ANGULAR_SPEED <
+        this.angularSpeed <
+        this.MAX_ANGULAR_SPEED / 3
+      )
+        this.angularSpeed += 2 * a;
+    }
+    if (a < 0) {
+      if (-this.MAX_SPEED / 3 < this.angularSpeed < this.MAX_SPEED)
+        this.angularSpeed += 2 * a;
+    }
   }
-
 }
 
 export default Robot;
